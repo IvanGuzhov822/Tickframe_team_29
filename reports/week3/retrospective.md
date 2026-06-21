@@ -1,6 +1,6 @@
-Sprint Retrospective
+## Sprint Retrospective
 
-What Went Well
+## What Went Well
 
 1. MVP v1 core functionality was delivered
 
@@ -14,7 +14,7 @@ During the Sprint, the team created and maintained key project artifacts, includ
 
 The Product Backlog was refined into clearly defined PBIs with priorities, story point estimates, MVP version tracking, implementer assignments, reviewer assignments, and acceptance criteria. This improved Sprint planning and progress tracking.
 
-What Did Not Go Well
+## What Did Not Go Well
 
 1. MVP v1 demonstration materials were not fully available during the Sprint Review
 
@@ -28,7 +28,7 @@ Several implementation details were known primarily by individual contributors. 
 
 Pattern detection functionality and several advanced analytics features were not fully implemented by the time of the Sprint Review and require additional development and validation.
 
-Action Points
+## Action Points
 
 1. Improve Sprint Review readiness
 
