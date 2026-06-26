@@ -18,6 +18,7 @@ from pydantic import BaseModel
 from .auth import AuthConflict, AuthInvalidCredentials, AuthService
 from .config import load_config
 from .history import TIMEFRAME_SECONDS
+from .pattern_ml import pattern_ml_detector
 from .service import MarketDataService
 
 
@@ -225,6 +226,43 @@ async def metrics(
         )
     except ValueError as error:
         raise HTTPException(status_code=400, detail=str(error)) from error
+
+
+@app.get("/api/v1/patterns/ml")
+async def ml_patterns(
+    exchange: str,
+    instrument_id: str = Query(alias="instrumentId"),
+    timeframe: str = Query(default="1m"),
+) -> dict:
+    ensure_supported_market(exchange, instrument_id)
+    if timeframe not in TIMEFRAME_SECONDS:
+        raise HTTPException(status_code=400, detail="Unsupported timeframe")
+    if timeframe != "1m":
+        return pattern_ml_detector.predict(
+            exchange=exchange,
+            instrument_id=instrument_id,
+            timeframe=timeframe,
+            source="unsupported",
+            candles=[],
+        )
+    try:
+        history = await service.candle_history(
+            exchange=exchange,
+            instrument_id=instrument_id,
+            timeframe=timeframe,
+            limit=240,
+            from_ms=None,
+            to_ms=None,
+        )
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail=str(error)) from error
+    return pattern_ml_detector.predict(
+        exchange=exchange,
+        instrument_id=instrument_id,
+        timeframe=timeframe,
+        source=str(history["source"]),
+        candles=history["candles"],
+    )
 
 
 @app.websocket("/ws/v1/markets")
