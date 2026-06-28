@@ -8,6 +8,10 @@ the result in a read-only React terminal with deterministic market metrics.
 Binance and Bybit remain independent sources. The UI never blends them into a
 synthetic price or candle.
 
+
+## VM deployment
+http://10.93.26.194:4173/
+
 ## Current Scope
 
 - 10 USDT instruments: BTC, ETH, SOL, XRP, AVAX, TON, TRX, BONK, PENGU, FLOKI
