@@ -59,7 +59,7 @@ Access and run evidence:
 | MVP v1 review needed clearer live-data availability and deployment evidence. | [#92](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/92), [#93](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/93) | Done in Sprint 2 | Reduced chart latency, added latency diagnostics, and exposed observability metrics/dashboard evidence. |
 | Customer/stakeholder needed the analytics flow to remain understandable during review. | [#100](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/100), [#101](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/101) | Done in Sprint 2 | Executed and summarized UAT/customer review evidence with sanitized public results. |
 | Pattern detection direction remained important but needed a safer foundation. | [#94](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/94) | Done in Sprint 2 | Added a synthetic baseline training pipeline and safe experimental ML endpoint behavior. |
-| Public sanitized demo video is required for Assignment 4 release evidence. | [#111](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/111) | Open | Must be completed before the final `v1.1.0` release description is complete. |
+| Public sanitized demo video is required for Assignment 4 release evidence. | [#111](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/111) | Tracked separately | Demo video will be added later by the owner of #111 and is not included in this release-evidence PR. |
 
 No additional public follow-up PBI was required from the three passed UAT
 scenarios. Private access details, recordings, and timecodes are Moodle-only.
@@ -84,13 +84,16 @@ and Testability (`QR-003`).
 
 | Evidence item | Link or location | Status |
 |---|---|---|
-| Unit tests | [`backend/tests`](../../backend/tests) | 65 tests passing locally on 2026-06-28 |
+| Unit tests | [`backend/tests`](../../backend/tests) | 69 tests passing locally on 2026-06-28 |
 | Integration tests | [`backend/tests/test_service_history.py`](../../backend/tests/test_service_history.py), [`backend/tests/test_database_history.py`](../../backend/tests/test_database_history.py), [`backend/tests/test_api_patterns.py`](../../backend/tests/test_api_patterns.py) | Passing locally on 2026-06-28 |
-| Automated QRTs | [`docs/quality-requirement-tests.md`](../../docs/quality-requirement-tests.md) | Passing locally through backend tests and coverage gate |
+| Automated QRTs | [`docs/quality-requirement-tests.md`](../../docs/quality-requirement-tests.md) and [`backend/tests/test_quality_requirements.py`](../../backend/tests/test_quality_requirements.py) | Passing locally through backend tests and coverage gate |
 | Critical-module coverage | [`docs/testing.md`](../../docs/testing.md#critical-modules-and-coverage-status) | All 10 critical modules pass the 30% gate; global measured coverage is 65% |
 | Quality CI pipeline | [Quality workflow](https://github.com/Team-29-TickFrame/Tickframe_team_29/actions/workflows/quality.yml) | Runs on pull requests, pushes to `main`, and manual dispatch |
 | Latest protected-branch quality run | [Quality workflow runs](https://github.com/Team-29-TickFrame/Tickframe_team_29/actions/workflows/quality.yml) | Must be green after the release-evidence PR merges |
-| Link-check CI pipeline | [Links workflow](https://github.com/Team-29-TickFrame/Tickframe_team_29/actions/workflows/links.yml) | Latest checked `main` run passed on 2026-06-28 |
+| Link-check CI pipeline | [Links workflow](https://github.com/Team-29-TickFrame/Tickframe_team_29/actions/workflows/links.yml) | Runs on Markdown/link-check changes in pull requests and pushes to `main` |
+| CI configuration | [`.github/workflows/quality.yml`](../../.github/workflows/quality.yml) | Backend lint/format/tests/coverage, frontend typecheck/build, and datetime-safety additional QA |
+| Link-check configuration | [`.github/workflows/links.yml`](../../.github/workflows/links.yml), [`github/workflows/links.yml`](../../github/workflows/links.yml), and [`lychee.toml`](../../lychee.toml) | Lychee checks repository Markdown links |
+| Link-check exclusions | [`docs/link-check-exclusions.md`](../../docs/link-check-exclusions.md) | Documents local URL exclusions for Lychee |
 | Branch protection or rules evidence | `reports/week4/images/` or Moodle screenshots | Store screenshots privately/publicly according to sensitivity |
 | Additional QA check | `ruff check --select DTZ backend/app ml/pattern_recognition` | Passing locally on 2026-06-28; runs in the Quality workflow |
 
@@ -103,19 +106,18 @@ The Assignment 4 tests, CI checks, QRTs, coverage gate, and Definition of Done
 remain active project assets. Later work must keep them passing or replace them
 with documented equivalent-or-stronger checks.
 
-## Release and Demo Evidence
+## Release Evidence
 
 | Item | Evidence |
 |---|---|
 | Assignment 4 SemVer release | Planned mapped release: `v1.1.0` from protected `main` after the release PR is merged |
 | Release PBI | [#103](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/103) |
 | Changelog release section | [`CHANGELOG.md`](../../CHANGELOG.md#110---2026-06-28) |
-| Public sanitized demo video | Tracked by [#111](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/111); link must be added before final release publication |
-| Presentation materials | [`reports/week4/presentation.pdf`](presentation.pdf) when the sanitized public copy is generated |
+| Public sanitized demo video | Tracked separately by [#111](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/111) |
 
 The final `v1.1.0` release description must identify the Assignment 4 Sprint
 increment, link [Sprint 2](https://github.com/Team-29-TickFrame/Tickframe_team_29/milestone/2),
-link current run instructions, and link the public sanitized demo video.
+and link current run instructions.
 
 ## UAT and Customer Review
 
@@ -138,10 +140,10 @@ link current run instructions, and link the public sanitized demo video.
 
 | Team member | Issues / PBIs | PRs or evidence | Activity |
 |---|---|---|---|
-| `kayumowanas` | [#103](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/103), [#104](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/104) | This release-evidence branch/PR | Changelog, release evidence, report alignment, and presentation materials |
+| `kayumowanas` | [#103](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/103), [#104](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/104) | This release-evidence branch/PR | Changelog, release evidence, report alignment, and presentation-material planning |
 | `dianasamojlova5947-cmyk` | [#100](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/100), [#101](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/101), [#109](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/109), [#111](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/111) | [#114](https://github.com/Team-29-TickFrame/Tickframe_team_29/pull/114), [#116](https://github.com/Team-29-TickFrame/Tickframe_team_29/pull/116), [#120](https://github.com/Team-29-TickFrame/Tickframe_team_29/pull/120), [#121](https://github.com/Team-29-TickFrame/Tickframe_team_29/pull/121), [#129](https://github.com/Team-29-TickFrame/Tickframe_team_29/pull/129) | UAT, customer review, LLM report, retrospective, and demo-video task ownership |
 | `IvanGuzhov822` | [#94](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/94), [#97](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/97), [#98](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/98) | [#113](https://github.com/Team-29-TickFrame/Tickframe_team_29/pull/113), [#123](https://github.com/Team-29-TickFrame/Tickframe_team_29/pull/123), [#124](https://github.com/Team-29-TickFrame/Tickframe_team_29/pull/124) | ML baseline, tests, coverage, and CI quality gates |
-| `z1nnyy` | [#99](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/99), [#107](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/107) | [#132](https://github.com/Team-29-TickFrame/Tickframe_team_29/pull/132) | Quality requirements and link-check/quality traceability work |
+| `z1nnyy` | [#99](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/99), [#107](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/107) | [#132](https://github.com/Team-29-TickFrame/Tickframe_team_29/pull/132) and [quality requirement test work](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/107) | Quality requirements, QRT automation, and link-check/quality traceability work |
 
 ## Screenshots and Public Evidence
 
@@ -157,16 +159,14 @@ links may not be inspectable by graders.
 
 Tickframe has a runnable Docker Compose product foundation with live exchange
 collectors, persisted candles and metrics, real-time analytics UI,
-observability, and an experimental ML pattern baseline. The main remaining
-Assignment 4 public evidence gap is the public sanitized demo video tracked by
-[#111](https://github.com/Team-29-TickFrame/Tickframe_team_29/issues/111).
+observability, and an experimental ML pattern baseline.
 
 Next steps:
 
 - Merge the release-evidence PR after review and confirm the protected
   default-branch Quality run is green.
 - Publish `v1.1.0` from protected `main`.
-- Add the public sanitized demo video link to the release and final submission
-  evidence.
+- Add the public sanitized demo video link later through the separate #111
+  evidence flow.
 - Submit private Sprint Review/UAT recording links, timecodes, credentials, and
   rehearsed presentation video through Moodle only.

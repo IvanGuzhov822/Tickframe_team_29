@@ -1,95 +1,118 @@
 # Quality Requirement Tests
 
-This document defines the maintained automated quality requirement tests for
-Tickframe. Each QRT links a measurable quality requirement to an automated test,
-coverage gate, or CI check that can be inspected in normal repository evidence.
+This document defines maintained automated quality requirement tests (QRTs) for
+Tickframe. The QRT set verifies the quality requirements in
+[`docs/quality-requirements.md`](quality-requirements.md) using the ISO/IEC
+25010 quality model selected for Sprint 2 / MVP v2.
 
-## QRT-001: Market data update latency
+## Traceability Summary
+
+| Quality requirement | ISO/IEC 25010 sub-characteristic | Automated QRT | Repository test or gate | CI execution |
+|---|---|---|---|---|
+| [QR-001: Market data update latency](quality-requirements.md#qr-001-market-data-update-latency) | Time behaviour | [QRT-001](#qrt-001-market-data-update-latency) | [`backend/tests/test_quality_requirements.py`](../backend/tests/test_quality_requirements.py) | `Quality` workflow backend job |
+| [QR-002: Exchange data failure visibility](quality-requirements.md#qr-002-exchange-data-failure-visibility) | Fault tolerance | [QRT-002](#qrt-002-exchange-data-failure-visibility) | [`backend/tests/test_quality_requirements.py`](../backend/tests/test_quality_requirements.py) | `Quality` workflow backend job |
+| [QR-003: Critical module test coverage](quality-requirements.md#qr-003-critical-module-test-coverage) | Testability | [QRT-003](#qrt-003-critical-module-test-coverage) | [`backend/tests/test_quality_requirements.py`](../backend/tests/test_quality_requirements.py) and [`backend/scripts/check_critical_coverage.py`](../backend/scripts/check_critical_coverage.py) | `Quality` workflow backend job |
+
+## Sprint Scope and Quality Model
+
+- Sprint scope: Sprint 2 / MVP v2, PB-29 / issue #107, Assignment 4 Part 4.
+- Selected quality model: ISO/IEC 25010.
+- Selected sub-characteristics: Time behaviour, Fault tolerance, and
+  Testability.
+- Automated CI entry point: the
+  [`Quality` workflow](../.github/workflows/quality.yml) runs
+  `coverage run --source=backend.app,ml.pattern_recognition -m unittest discover -s backend/tests`,
+  then generates `coverage.json` and runs
+  `python backend/scripts/check_critical_coverage.py coverage.json`.
+- Evidence location: latest protected-branch or pull-request run of the
+  [Quality workflow](https://github.com/Team-29-TickFrame/Tickframe_team_29/actions/workflows/quality.yml),
+  with the `backend-coverage` artifact when coverage evidence is needed.
+
+## QRT-001: Market Data Update Latency
+
+**Stable ID:** QRT-001
 
 **Linked quality requirement:** [QR-001](quality-requirements.md#qr-001-market-data-update-latency)
 
-**Verification method:** Automated backend unit/integration tests and CI
-coverage run.
+**ISO/IEC 25010 sub-characteristic:** Time behaviour
 
-**Test data, setup, or environment:** In-memory trade and candle fixtures under
-the standard GitHub Actions `Quality` workflow environment.
+**Verification method:** Automated backend test of the market-data latency
+telemetry path. The test records deterministic trade samples through
+`LatencyObservability` and checks the `exchange_to_backend` p95 latency.
+
+**Test data, setup, or environment:** Twenty deterministic Binance `BTC-USDT`
+trade samples in the standard Python test environment. Nineteen samples are
+within the 1 second latency budget and one sample is above the budget to verify
+the 95% threshold.
 
 **Automated command or CI check:**
+`coverage run --source=backend.app,ml.pattern_recognition -m unittest discover -s backend/tests`
+in the `Quality` workflow backend job. For a focused local run:
+`python -m unittest backend.tests.test_quality_requirements.QualityRequirementLatencyTests`.
 
-```bash
-coverage run --source=backend.app,ml.pattern_recognition -m unittest discover -s backend/tests
-```
+**Expected measurable result:** The `exchange_to_backend` latency series has
+p95 latency of `1000ms` or less, and at least 95% of tested updates are within
+the `1000ms` budget.
 
-Relevant tests:
+**Evidence location:** [`backend/tests/test_quality_requirements.py`](../backend/tests/test_quality_requirements.py),
+the latest `Quality` workflow backend job, and the generated coverage evidence
+from that job.
 
-- [`backend/tests/test_observability.py`](../backend/tests/test_observability.py)
-- [`backend/tests/test_service_history.py`](../backend/tests/test_service_history.py)
+## QRT-002: Exchange Data Failure Visibility
 
-**Expected measurable result:** Latency samples are exported through the
-observability snapshot and Prometheus output with deterministic p95 values, and
-stable chart snapshots respect the configured delay window used for latency
-control.
-
-**Evidence link:** [Quality workflow](https://github.com/Team-29-TickFrame/Tickframe_team_29/actions/workflows/quality.yml)
-and the latest passing `Backend lint, tests, coverage` job for the protected
-default branch.
-
-## QRT-002: Exchange data failure visibility
+**Stable ID:** QRT-002
 
 **Linked quality requirement:** [QR-002](quality-requirements.md#qr-002-exchange-data-failure-visibility)
 
-**Verification method:** Automated backend unit tests.
+**ISO/IEC 25010 sub-characteristic:** Fault tolerance
 
-**Test data, setup, or environment:** Deterministic exchange/store fixtures
-under the standard GitHub Actions `Quality` workflow environment.
+**Verification method:** Automated backend test of market freshness status in
+`LiveStore.market_snapshot`. The test simulates a market that stops receiving
+new exchange data after the latest trade.
+
+**Test data, setup, or environment:** Standard repository market configuration
+loaded by `load_config()`, one deterministic Binance `BTC-USDT` trade, and
+snapshot timestamps immediately before and at the 10 second stale-data budget.
 
 **Automated command or CI check:**
+`coverage run --source=backend.app,ml.pattern_recognition -m unittest discover -s backend/tests`
+in the `Quality` workflow backend job. For a focused local run:
+`python -m unittest backend.tests.test_quality_requirements.QualityRequirementFailureVisibilityTests`.
 
-```bash
-coverage run --source=backend.app,ml.pattern_recognition -m unittest discover -s backend/tests
-```
+**Expected measurable result:** The market remains `live` before the 10 second
+budget and becomes `stale` at `10000ms`, with the `ageMs` field exposed in the
+API snapshot that the UI consumes.
 
-Relevant tests:
+**Evidence location:** [`backend/tests/test_quality_requirements.py`](../backend/tests/test_quality_requirements.py)
+and the latest `Quality` workflow backend job.
 
-- [`backend/tests/test_aggregation.py`](../backend/tests/test_aggregation.py)
-- [`backend/tests/test_exchange_parsers.py`](../backend/tests/test_exchange_parsers.py)
+## QRT-003: Critical Module Test Coverage
 
-**Expected measurable result:** Disconnect gaps are not hidden as normal
-price-continuation data, exchange trade timestamps are normalized with latency
-metadata, and the health/status path remains available for users to distinguish
-fresh and stale data states.
-
-**Evidence link:** [Quality workflow](https://github.com/Team-29-TickFrame/Tickframe_team_29/actions/workflows/quality.yml)
-and the latest passing `Backend lint, tests, coverage` job for the protected
-default branch.
-
-## QRT-003: Critical module test coverage
+**Stable ID:** QRT-003
 
 **Linked quality requirement:** [QR-003](quality-requirements.md#qr-003-critical-module-test-coverage)
 
-**Verification method:** Automated coverage report plus critical-module
-coverage gate.
+**ISO/IEC 25010 sub-characteristic:** Testability
 
-**Test data, setup, or environment:** Standard GitHub Actions `Quality`
-workflow environment with backend and ML test dependencies installed.
+**Verification method:** Automated test of the maintained critical-module
+coverage gate plus the CI coverage check itself. The unit test verifies that
+the gate accepts coverage at the required threshold and fails when a critical
+module drops below it.
 
-**Automated command or CI check:**
+**Test data, setup, or environment:** Synthetic `coverage.json` payloads that
+include every module listed in `backend/scripts/check_critical_coverage.py`,
+plus the real CI-generated `coverage.json` from backend test execution.
 
-```bash
-coverage json -o coverage.json
-python backend/scripts/check_critical_coverage.py coverage.json
-```
+**Automated command or CI check:** The `Quality` workflow backend job runs
+`coverage json -o coverage.json` and
+`python backend/scripts/check_critical_coverage.py coverage.json`. For a
+focused local run:
+`python -m unittest backend.tests.test_quality_requirements.QualityRequirementCoverageGateTests`.
 
-Relevant implementation:
+**Expected measurable result:** Every listed critical module is present in the
+coverage report and has line coverage of at least `30%`. The CI job fails if a
+critical module is missing or below `30%`.
 
-- [`backend/scripts/check_critical_coverage.py`](../backend/scripts/check_critical_coverage.py)
-- [`docs/testing.md`](testing.md#critical-modules-and-coverage-status)
-
-**Expected measurable result:** Every critical module listed in
-`backend/scripts/check_critical_coverage.py` is present in `coverage.json` and
-has at least 30% automated line coverage; the CI job fails if any listed module
-falls below the threshold.
-
-**Evidence link:** [Quality workflow](https://github.com/Team-29-TickFrame/Tickframe_team_29/actions/workflows/quality.yml)
-and the uploaded `backend-coverage` artifact from the latest passing protected
-default-branch run.
+**Evidence location:** [`backend/scripts/check_critical_coverage.py`](../backend/scripts/check_critical_coverage.py),
+[`backend/tests/test_quality_requirements.py`](../backend/tests/test_quality_requirements.py),
+the latest `Quality` workflow backend job, and the `backend-coverage` artifact.

@@ -34,9 +34,9 @@ than the core analytics, history, observability, and model-serving logic.
 
 | Test type | Scope | Command or CI check | Latest result | Evidence |
 |---|---|---|---|---|
-| Unit tests | Aggregation, metrics, auth, config, exchange parsers, observability, and ML detector behavior. | `coverage run --source=backend.app,ml.pattern_recognition -m unittest discover -s backend/tests` | Passing locally on 2026-06-28; 65 tests OK. | [`backend/tests`](../backend/tests) and [Quality workflow](https://github.com/Team-29-TickFrame/Tickframe_team_29/actions/workflows/quality.yml) |
+| Unit tests | Aggregation, metrics, auth, config, exchange parsers, observability, and ML detector behavior. | `coverage run --source=backend.app,ml.pattern_recognition -m unittest discover -s backend/tests` | Passing locally on 2026-06-28; 69 tests OK. | [`backend/tests`](../backend/tests) and [Quality workflow](https://github.com/Team-29-TickFrame/Tickframe_team_29/actions/workflows/quality.yml) |
 | Integration tests | Service history fallback, metrics snapshots, database-history conversion helpers, exchange subscription handling, and ML API function using history plus detector logic. | Same backend test command. | Passing locally on 2026-06-28. | [`backend/tests/test_service_history.py`](../backend/tests/test_service_history.py), [`backend/tests/test_database_history.py`](../backend/tests/test_database_history.py), [`backend/tests/test_api_patterns.py`](../backend/tests/test_api_patterns.py) |
-| Automated QRTs | QR-001, QR-002, and QR-003. | Backend tests and critical coverage gate. | Passing locally on 2026-06-28. | [`docs/quality-requirement-tests.md`](quality-requirement-tests.md) |
+| Automated QRTs | QR-001 latency, QR-002 failure visibility, and QR-003 critical-module testability. | Backend tests and critical coverage gate. | Passing locally on 2026-06-28. | [`docs/quality-requirement-tests.md`](quality-requirement-tests.md) and [`backend/tests/test_quality_requirements.py`](../backend/tests/test_quality_requirements.py) |
 | Critical-module coverage | All critical modules listed above. | `python backend/scripts/check_critical_coverage.py coverage.json` | Passing locally on 2026-06-28 for 10 modules at >= 30%. | [`backend/scripts/check_critical_coverage.py`](../backend/scripts/check_critical_coverage.py) |
 
 ## CI and QA Check Status
@@ -65,7 +65,7 @@ than the core analytics, history, observability, and model-serving logic.
 | Quality CI pipeline | [Quality workflow](https://github.com/Team-29-TickFrame/Tickframe_team_29/actions/workflows/quality.yml) | Runs on pull requests, pushes to `main`, and manual dispatch. |
 | Markdown link-check pipeline | [Links workflow](https://github.com/Team-29-TickFrame/Tickframe_team_29/actions/workflows/links.yml) | Runs on Markdown/link-check changes in pull requests and pushes to `main`. |
 | CI configuration | [`.github/workflows/quality.yml`](../.github/workflows/quality.yml) | Defines backend lint, formatting, tests, coverage, frontend typecheck/build, and additional QA. |
-| Link-check configuration | [`.github/workflows/links.yml`](../.github/workflows/links.yml) and [`lychee.toml`](../lychee.toml) | Defines Lychee link checking for repository Markdown. |
+| Link-check configuration | [`.github/workflows/links.yml`](../.github/workflows/links.yml), [`github/workflows/links.yml`](../github/workflows/links.yml), and [`lychee.toml`](../lychee.toml) | Defines Lychee link checking for repository Markdown. |
 | Branch protection or rules evidence | Week 4 report screenshots or GitHub branch settings | Public screenshots should be stored under `reports/week4/images/` when captured. |
 
 ## Manual Evidence That Does Not Count as QRT
